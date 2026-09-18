@@ -139,6 +139,7 @@ export const AnalyticsProvider = ({ children }) => {
       setAnomalies([]);
       setRecommendations([]);
       setAnalysisError(null);
+      setActiveView('landing');
 
       return res;
     } catch (err) {

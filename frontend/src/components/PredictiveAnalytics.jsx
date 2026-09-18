@@ -110,6 +110,25 @@ export const PredictiveAnalytics = () => {
           </div>
         </div>
       )}
+      {/* Notice Banner when Dataset is Small */}
+      {mlModel?.data_limitation_warning && (
+        <div style={{
+          padding: '1rem 1.25rem',
+          background: 'rgba(59, 130, 246, 0.08)',
+          border: '1px solid rgba(59, 130, 246, 0.3)',
+          borderRadius: 'var(--radius-md)',
+          marginBottom: '1.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.75rem'
+        }}>
+          <AlertTriangle size={20} color="#60A5FA" style={{ flexShrink: 0 }} />
+          <div style={{ color: '#BFDBFE', fontSize: '0.8125rem', lineHeight: 1.5 }}>
+            <strong>Dataset Limitation Notice:</strong> {mlModel.data_limitation_warning}
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
@@ -117,12 +136,12 @@ export const PredictiveAnalytics = () => {
             <Cpu size={13} /> Supervised Machine Learning
           </span>
           <span className="badge badge-cyan">
-            80/20 Stratified Validation
+            {mlModel?.evaluation_methodology || '80/20 Stratified Validation'}
           </span>
         </div>
         <h1 style={{ fontSize: '2rem' }}>Predictive Churn Analytics & Scenario Simulator</h1>
         <p style={{ color: 'var(--text-secondary)' }}>
-          Production-grade ensemble modeling for proactive retention forecasting and real-time What-If sensitivity testing.
+          Comparing Random Forest Classifier against Logistic Regression baseline with zero target leakage.
         </p>
       </div>
 
@@ -183,6 +202,43 @@ export const PredictiveAnalytics = () => {
           </span>
         </div>
       </div>
+
+      {/* Model Benchmark Comparison Strip */}
+      {isAvailable && mlModel?.baseline_metrics && (
+        <div className="glass-card" style={{ padding: '1.25rem 1.5rem', marginBottom: '2rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+            <div>
+              <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Algorithm Benchmark Comparison</h3>
+              <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Comparing Random Forest (Ensemble) against Logistic Regression (Linear Baseline) on the same 80/20 test split</p>
+            </div>
+            <span className="badge badge-indigo">Zero Target Leakage</span>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+            <div style={{ background: 'rgba(59, 130, 246, 0.06)', border: '1px solid rgba(59, 130, 246, 0.25)', padding: '1rem', borderRadius: '8px' }}>
+              <div style={{ fontSize: '0.8125rem', color: '#93C5FD', fontWeight: 700, marginBottom: '0.5rem' }}>
+                Random Forest (Ensemble) — Selected Model
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+                <span>ROC-AUC: <strong style={{ color: 'var(--accent-cyan)' }}>{((metrics.roc_auc || 0) * 100).toFixed(1)}%</strong></span>
+                <span>Accuracy: <strong style={{ color: 'var(--text-primary)' }}>{((metrics.accuracy || 0) * 100).toFixed(1)}%</strong></span>
+                <span>F1-Score: <strong style={{ color: 'var(--accent-emerald)' }}>{((metrics.f1_score || 0) * 100).toFixed(1)}%</strong></span>
+              </div>
+            </div>
+
+            <div style={{ background: 'rgba(148, 163, 184, 0.04)', border: '1px solid rgba(148, 163, 184, 0.2)', padding: '1rem', borderRadius: '8px' }}>
+              <div style={{ fontSize: '0.8125rem', color: '#CBD5E1', fontWeight: 700, marginBottom: '0.5rem' }}>
+                Logistic Regression (Linear Baseline)
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
+                <span>ROC-AUC: <strong style={{ color: '#CBD5E1' }}>{((mlModel.baseline_metrics.roc_auc || 0) * 100).toFixed(1)}%</strong></span>
+                <span>Accuracy: <strong style={{ color: '#CBD5E1' }}>{((mlModel.baseline_metrics.accuracy || 0) * 100).toFixed(1)}%</strong></span>
+                <span>F1-Score: <strong style={{ color: '#CBD5E1' }}>{((mlModel.baseline_metrics.f1_score || 0) * 100).toFixed(1)}%</strong></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Row: Confusion Matrix + Feature Importances */}
       <div style={{

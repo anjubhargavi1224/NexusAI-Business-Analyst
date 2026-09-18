@@ -446,7 +446,7 @@ def get_executive_report():
     anoms = state.results.get("anomalies") if state.results else state.anomalies.detect_business_anomalies()
     recs = state.results.get("recommendations") if state.results else RecommendationEngine(state.loader.get_clean_dataframe(), kpis, seg, ml_res).generate_recommendations()
 
-    gen = ExecutiveReportGenerator(kpis, quality, seg, ml_res, anoms, recs)
+    gen = ExecutiveReportGenerator(kpis, quality, seg, ml_res, anoms, recs, is_demo=state.is_demo_dataset)
     return gen.generate_report()
 
 # ----------------- STATIC FRONTEND SERVING ----------------- #

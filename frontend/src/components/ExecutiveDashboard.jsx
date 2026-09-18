@@ -216,29 +216,33 @@ export const ExecutiveDashboard = () => {
           </div>
           <div className="kpi-value">{kpis.revenue_formatted}</div>
           <div className="kpi-footer">
-            <span style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              color: kpis.growth_direction === 'positive' ? '#34D399' : '#F87171', 
-              fontWeight: 600 
-            }}>
-              {kpis.growth_direction === 'positive' ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-              {kpis.revenue_growth_pct > 0 ? `+${kpis.revenue_growth_pct}%` : `${kpis.revenue_growth_pct}%`}
-            </span>
-            <span>vs. trailing period</span>
+            {kpis.growth_available ? (
+              <span style={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                color: kpis.growth_direction === 'positive' ? '#34D399' : '#F87171', 
+                fontWeight: 600 
+              }}>
+                {kpis.growth_direction === 'positive' ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                {kpis.revenue_growth_pct > 0 ? `+${kpis.revenue_growth_pct}%` : `${kpis.revenue_growth_pct}%`}
+                <span style={{ marginLeft: '4px', color: 'var(--text-secondary)', fontWeight: 400 }}>PoP</span>
+              </span>
+            ) : (
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>Historical periods unavailable</span>
+            )}
           </div>
         </div>
 
-        {/* Total Active Customers */}
+        {/* Active Accounts vs Total Customers */}
         <div className="glass-card kpi-card">
           <div className="kpi-title">
             <span>Active Accounts</span>
             <Users size={16} color="var(--accent-indigo)" />
           </div>
-          <div className="kpi-value">{kpis.total_customers?.toLocaleString()}</div>
+          <div className="kpi-value">{kpis.active_customers?.toLocaleString() || kpis.total_customers?.toLocaleString()}</div>
           <div className="kpi-footer">
-            <span style={{ color: '#34D399', fontWeight: 600 }}>100% Monitored</span>
-            <span>telemetry verified</span>
+            <span style={{ color: '#34D399', fontWeight: 600 }}>{kpis.total_customers?.toLocaleString()} Total</span>
+            <span style={{ color: 'var(--text-muted)' }}>({kpis.churned_customers || 0} churned)</span>
           </div>
         </div>
 
@@ -248,9 +252,13 @@ export const ExecutiveDashboard = () => {
             <span>Avg Order Value (AOV)</span>
             <ShoppingBag size={16} color="var(--accent-violet)" />
           </div>
-          <div className="kpi-value">{kpis.aov_formatted}</div>
+          <div className="kpi-value" style={{ fontSize: kpis.aov_available ? '1.75rem' : '1.125rem' }}>
+            {kpis.aov_available ? kpis.aov_formatted : 'Not Available'}
+          </div>
           <div className="kpi-footer">
-            <span style={{ color: 'var(--text-secondary)' }}>Normalized basket size</span>
+            <span style={{ color: 'var(--text-secondary)', fontSize: '0.75rem' }}>
+              {kpis.aov_available ? (kpis.total_orders > 0 ? `${kpis.total_orders.toLocaleString()} orders` : 'Per-order basis') : 'Order data required'}
+            </span>
           </div>
         </div>
 
@@ -260,9 +268,13 @@ export const ExecutiveDashboard = () => {
             <span>Monthly Run-Rate (MRR)</span>
             <Activity size={16} color="var(--accent-emerald)" />
           </div>
-          <div className="kpi-value">{kpis.mrr_formatted}</div>
+          <div className="kpi-value" style={{ fontSize: kpis.mrr_available ? '1.75rem' : '1.125rem' }}>
+            {kpis.mrr_available ? kpis.mrr_formatted : 'Not Available'}
+          </div>
           <div className="kpi-footer">
-            <span style={{ color: '#34D399', fontWeight: 600 }}>Predictable Inflow</span>
+            <span style={{ color: kpis.mrr_available ? '#34D399' : 'var(--text-muted)', fontSize: '0.75rem' }}>
+              {kpis.mrr_available ? 'Predictable Monthly Inflow' : 'Subscription terms required'}
+            </span>
           </div>
         </div>
 
@@ -281,18 +293,20 @@ export const ExecutiveDashboard = () => {
           </div>
         </div>
 
-        {/* Top Product / Category */}
+        {/* Top Product or Segment */}
         <div className="glass-card kpi-card">
           <div className="kpi-title">
-            <span>Top Performing Line</span>
+            <span>{kpis.product_analytics_available ? 'Dominant Product Line' : (kpis.top_segment ? `Top Segment (${kpis.top_segment.dimension})` : 'Product Performance')}</span>
             <Award size={16} color="var(--accent-amber)" />
           </div>
-          <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 700, margin: '0.4rem 0', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {kpis.top_category?.name}
+          <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.125rem', fontWeight: 700, margin: '0.4rem 0', color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {kpis.product_analytics_available ? kpis.top_category?.name : (kpis.top_segment ? kpis.top_segment.name : 'Unavailable')}
           </div>
           <div className="kpi-footer">
-            <span style={{ color: 'var(--accent-amber)', fontWeight: 600 }}>{kpis.top_category?.share_pct}%</span>
-            <span>of gross revenue</span>
+            <span style={{ color: 'var(--accent-amber)', fontWeight: 600 }}>
+              {kpis.product_analytics_available ? `${kpis.top_category?.share_pct}%` : (kpis.top_segment ? `${kpis.top_segment.share_pct}%` : 'N/A')}
+            </span>
+            <span>{kpis.product_analytics_available || kpis.top_segment ? 'of gross revenue' : 'No category column'}</span>
           </div>
         </div>
 
@@ -302,12 +316,14 @@ export const ExecutiveDashboard = () => {
             <span>Highest-Risk Segment</span>
             <AlertTriangle size={16} color="#FB7185" />
           </div>
-          <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.25rem', fontWeight: 700, margin: '0.4rem 0', color: '#FB7185', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {kpis.highest_risk_segment?.name}
+          <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.125rem', fontWeight: 700, margin: '0.4rem 0', color: '#FB7185', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {kpis.highest_risk_segment ? kpis.highest_risk_segment.name : 'None Flagged'}
           </div>
           <div className="kpi-footer">
-            <span style={{ color: '#FB7185', fontWeight: 600 }}>{kpis.highest_risk_segment?.churn_rate_pct}%</span>
-            <span>segment churn rate</span>
+            <span style={{ color: '#FB7185', fontWeight: 600 }}>
+              {kpis.highest_risk_segment ? `${kpis.highest_risk_segment.churn_rate_pct}%` : '0%'}
+            </span>
+            <span>{kpis.highest_risk_segment ? 'segment churn rate' : 'baseline risk'}</span>
           </div>
         </div>
 
@@ -318,11 +334,11 @@ export const ExecutiveDashboard = () => {
             <ShieldCheck size={16} color="#34D399" />
           </div>
           <div className="kpi-value" style={{ color: '#34D399' }}>
-            {datasetInfo?.quality_report?.quality_score || 98}%
+            {datasetInfo?.quality_report?.quality_score || 95}%
           </div>
           <div className="kpi-footer">
             <span style={{ color: '#34D399', fontWeight: 600 }}>{datasetInfo?.quality_report?.quality_grade || 'Grade A'}</span>
-            <span>ML Validation Passed</span>
+            <span>Audit Verified</span>
           </div>
         </div>
       </div>

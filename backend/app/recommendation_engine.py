@@ -6,60 +6,98 @@ class RecommendationEngine:
     """
     Synthesizes analytical computations, ML clustering, and predictive risk models
     into structured managerial decision frameworks:
-    Finding -> Evidence -> Business Impact -> Recommended Action -> Priority
+    Finding -> Evidence -> Business Impact -> Recommended Action -> Transparent Priority Score.
+
+    Strictly grounded in verified dataset figures without invented intervention percentages.
     """
 
     def __init__(self, df: pd.DataFrame, kpis: Dict[str, Any], segmentation: Dict[str, Any], ml_metrics: Dict[str, Any]):
         self.df = df
-        self.kpis = kpis
-        self.segmentation = segmentation
-        self.ml_metrics = ml_metrics
+        self.kpis = kpis or {}
+        self.segmentation = segmentation or {}
+        self.ml_metrics = ml_metrics or {}
 
-    def _calc_churn_rate(self, sub_df: pd.DataFrame, default_val: float = 25.0) -> float:
-        """Safely calculates churn percentage across numeric, boolean, or string representations."""
+    def _calc_churn_rate(self, sub_df: pd.DataFrame, default_val: float = 0.0) -> float:
+        """Calculates exact churn percentage across numeric, boolean, or string target representations."""
         if sub_df is None or len(sub_df) == 0:
             return default_val
         for c in ["churned", "churn", "is_churn", "target"]:
             if c in sub_df.columns:
                 s = sub_df[c]
                 if pd.api.types.is_numeric_dtype(s):
-                    return float(round(s.mean() * 100, 1))
+                    return float(round(s.fillna(0).mean() * 100, 1))
                 val_lower = s.astype(str).str.strip().str.lower()
-                is_pos = val_lower.isin(["1", "1.0", "true", "yes", "churned", "churn", "y", "t", "positive"])
+                is_pos = val_lower.isin(["1", "1.0", "true", "yes", "churned", "churn", "y", "t"])
                 return float(round(is_pos.mean() * 100, 1))
         return default_val
 
+    def _score_priority(self, impact_score: int, urgency_score: int, evidence_score: int) -> Dict[str, Any]:
+        """
+        Transparent priority calculation:
+        Priority Rank = Impact (1-3) × Urgency (1-3) × Evidence Strength (1-3)
+        Range: 1 to 27
+        """
+        composite = impact_score * urgency_score * evidence_score
+        if composite >= 18:
+            tier = "High"
+            badge = "Critical Executive Priority"
+        elif composite >= 8:
+            tier = "Medium"
+            badge = "Operational Priority"
+        else:
+            tier = "Low"
+            badge = "Monitoring Initiative"
+
+        return {
+            "level": tier,
+            "composite_score": composite,
+            "badge": badge,
+            "scoring_breakdown": {
+                "impact_factor": impact_score,
+                "urgency_factor": urgency_score,
+                "evidence_strength": evidence_score,
+                "formula": "Impact (1-3) × Urgency (1-3) × Evidence (1-3)"
+            }
+        }
+
     def generate_recommendations(self) -> List[Dict[str, Any]]:
         df = self.df
-        kpis = self.kpis or {}
-        seg_dict = self.segmentation or {}
-        segments = seg_dict.get("segmentations", seg_dict.get("segment_summaries", []))
+        kpis = self.kpis
+        segments = self.segmentation.get("segment_summaries", [])
         total_rev = kpis.get("total_revenue", 0.0)
         churn_rate = kpis.get("churn_rate", 0.0)
+        total_cust = kpis.get("total_customers", len(df))
 
         recommendations = []
 
-        # 1. Churn Mitigation & Contract Strategy (High Priority)
-        month_to_month_count = 0
+        # ----------------------------------------------------
+        # 1. Contract Structure & Month-to-Month Churn Signal
+        # ----------------------------------------------------
         if "contract_type" in df.columns:
             m2m = df[df["contract_type"] == "Month-to-Month"]
-            month_to_month_count = len(m2m)
-            m2m_rev = float(m2m["total_revenue"].sum()) if "total_revenue" in m2m.columns else 0.0
-            m2m_churn = self._calc_churn_rate(m2m, max(28.0, churn_rate * 1.4))
+            m2m_count = len(m2m)
+            if m2m_count > 0:
+                m2m_rev = float(m2m["total_revenue"].sum()) if "total_revenue" in m2m.columns else 0.0
+                m2m_churn = self._calc_churn_rate(m2m, churn_rate)
+                rev_share = (m2m_rev / total_rev * 100) if total_rev > 0 else 0.0
 
-            recommendations.append({
-                "id": "REC-01",
-                "category": "Customer Retention",
-                "finding": "Month-to-Month contracts drive disproportionately high customer churn and volatile recurring cashflow.",
-                "evidence": f"Accounts on Month-to-Month terms exhibit a {m2m_churn:.1f}% churn rate compared to the company baseline of {churn_rate:.1f}%, representing ${m2m_rev:,.2f} in vulnerable annual contract value across {month_to_month_count} accounts.",
-                "business_impact": f"Retaining 20% of these at-risk accounts protects approximately ${m2m_rev * 0.20:,.2f} in recurring revenue and increases customer lifetime value (LTV) by an estimated 32%.",
-                "recommended_action": "Introduce a 12-month contract incentive with a 15% pricing discount or onboarding training credits. Mandate customer success check-ins at Day 45 for all flexible-billing clients.",
-                "priority": "High",
-                "pillar": "Retention & Renewal",
-                "estimated_roi": "4.2x ROI on retention spend"
-            })
+                p_score = self._score_priority(impact_score=3, urgency_score=3, evidence_score=3)
 
-        # 2. At-Risk High-Spenders VIP Intervention (High Priority)
+                recommendations.append({
+                    "id": "REC-01",
+                    "category": "Contract & Retention Strategy",
+                    "finding": "Month-to-Month contract terms correlate with elevated account attrition compared to baseline.",
+                    "evidence": f"Accounts on flexible terms ({m2m_count} accounts) show an observed {m2m_churn:.1f}% churn rate (vs. portfolio baseline of {churn_rate:.1f}%), representing ${m2m_rev:,.2f} ({rev_share:.1f}% of gross revenue).",
+                    "business_impact": f"Voluntary attrition in this cohort directly exposes up to ${m2m_rev:,.2f} in annualized contractual revenue to recurring churn risk.",
+                    "recommended_action": "Evaluate proactive contract-conversion incentives (such as bundled features or annual agreement terms) for flexible-billing accounts.",
+                    "priority": p_score["level"],
+                    "priority_details": p_score,
+                    "pillar": "Retention & Renewal"
+                })
+
+        # ----------------------------------------------------
+        # 2. At-Risk / Inactive Accounts Intervention
+        # ----------------------------------------------------
         at_risk_seg = None
         for s in segments:
             if "At-Risk" in s.get("persona_name", ""):
@@ -69,87 +107,91 @@ class RecommendationEngine:
         if at_risk_seg:
             seg_rev = at_risk_seg.get("total_revenue", 0.0)
             seg_cust = at_risk_seg.get("customer_count", 0)
-            avg_inactive = at_risk_seg.get("avg_days_inactive", 45)
+            avg_inactive = at_risk_seg.get("avg_days_inactive", 0)
+            seg_churn = at_risk_seg.get("churn_rate_pct", 0)
+
+            p_score = self._score_priority(impact_score=3, urgency_score=2, evidence_score=3)
 
             recommendations.append({
                 "id": "REC-02",
-                "category": "VIP Account Defense",
-                "finding": "Historically high-spending tier accounts are exhibiting signs of operational dormancy.",
-                "evidence": f"The '{at_risk_seg.get('persona_name')}' cluster accounts for {seg_cust} organizations generating ${seg_rev:,.2f} ({at_risk_seg.get('revenue_share_pct')} % of total revenue), yet shows an average inactivity of {avg_inactive:.0f} days.",
-                "business_impact": f"Unaddressed churn in this single cohort risks wiping out ${seg_rev * 0.35:,.2f} in gross profit over the next two fiscal quarters.",
-                "recommended_action": "Assign senior Account Executives to initiate Quarterly Business Reviews (QBRs) and provide complimentary workflow optimization consultations within 14 business days.",
-                "priority": "High",
-                "pillar": "Strategic Account Management",
-                "estimated_roi": "Immediate preservation of top 15% revenue"
+                "category": "Account Engagement & Outreach",
+                "finding": "Extended inactivity is an observed risk signal associated with customer attrition in this dataset.",
+                "evidence": f"The '{at_risk_seg.get('persona_name')}' cohort comprises {seg_cust} accounts generating ${seg_rev:,.2f} ({at_risk_seg.get('revenue_share_pct')}% of revenue) with an average of {avg_inactive:.0f} days since last activity and {seg_churn:.1f}% churn.",
+                "business_impact": f"Dormancy in these accounts represents an immediate retention vulnerability of ${seg_rev:,.2f}.",
+                "recommended_action": "Initiate structured account-review check-ins and customer success outreach prior to renewal milestones.",
+                "priority": p_score["level"],
+                "priority_details": p_score,
+                "pillar": "Customer Engagement"
             })
 
-        # 3. Product & Feature Expansion for High-Value Champions (Medium Priority)
+        # ----------------------------------------------------
+        # 3. High-Value Loyal Expansion
+        # ----------------------------------------------------
         champ_seg = None
         for s in segments:
-            if "Champion" in s.get("persona_name", ""):
+            if "High-Value" in s.get("persona_name", "") or "Loyal" in s.get("persona_name", ""):
                 champ_seg = s
                 break
         if champ_seg:
             c_rev = champ_seg.get("total_revenue", 0.0)
             c_count = champ_seg.get("customer_count", 0)
+            c_share = champ_seg.get("revenue_share_pct", 0)
+            c_churn = champ_seg.get("churn_rate_pct", 0)
+
+            p_score = self._score_priority(impact_score=2, urgency_score=2, evidence_score=3)
+
             recommendations.append({
                 "id": "REC-03",
-                "category": "Revenue Expansion",
-                "finding": "High-Value Champions show high platform engagement with underutilized expansion capacity.",
-                "evidence": f"This cohort comprises {c_count} accounts with high retention (churn < 4%), contributing ${c_rev:,.2f} in revenue with an average order value of ${champ_seg.get('avg_order_value', 0):,.2f}.",
-                "business_impact": f"Expanding average contract value by 12% across this enthusiastic base unlocks approximately ${c_rev * 0.12:,.2f} in high-margin expansion ARR with negligible acquisition costs.",
-                "recommended_action": "Launch an exclusive Customer Advisory Board (CAB) and package add-on API and AI analytics modules tailored to their usage patterns.",
-                "priority": "Medium",
-                "pillar": "Upsell & Expansion",
-                "estimated_roi": "Zero CAC expansion pipeline"
+                "category": "Account Expansion & Upsell",
+                "finding": "Top revenue-generating cohort demonstrates established retention stability.",
+                "evidence": f"The '{champ_seg.get('persona_name')}' cohort encompasses {c_count} accounts contributing ${c_rev:,.2f} ({c_share}% of revenue) with low observed churn ({c_churn:.1f}%).",
+                "business_impact": "This stable account base provides a defensible foundation for strategic expansion and feature adoption.",
+                "recommended_action": "Identify expansion opportunities and solicit structured product feedback through executive stakeholder forums.",
+                "priority": p_score["level"],
+                "priority_details": p_score,
+                "pillar": "Account Expansion"
             })
 
-        # 4. Support Resolution Velocity & Operational Efficiency (Medium Priority)
+        # ----------------------------------------------------
+        # 4. Support Ticket Resolution & Operational Friction
+        # ----------------------------------------------------
         if "support_tickets" in df.columns and "avg_resolution_hrs" in df.columns:
-            slow_support = df[df["avg_resolution_hrs"] > 24.0]
+            slow_support = df[df["avg_resolution_hrs"] > 20.0]
             slow_count = len(slow_support)
             if slow_count >= 5:
-                slow_churn = self._calc_churn_rate(slow_support, 24.0)
+                slow_churn = self._calc_churn_rate(slow_support, churn_rate)
+                p_score = self._score_priority(impact_score=2, urgency_score=2, evidence_score=2)
+
                 recommendations.append({
                     "id": "REC-04",
-                    "category": "Operational Efficiency",
-                    "finding": "Prolonged support ticket resolution times correlate strongly with NPS degradation and subsequent churn.",
-                    "evidence": f"Accounts experiencing resolution times exceeding 24 hours ({slow_count} accounts) show an average churn rate of {slow_churn:.1f}% versus the company baseline of {churn_rate:.1f}%.",
-                    "business_impact": "Customer dissatisfaction during technical incidents accounts for an estimated 28% of voluntary customer departures.",
-                    "recommended_action": "Deploy intelligent tier-1 ticket triaging and establish a strict 4-hour Service Level Objective (SLO) for accounts billed under Enterprise or Growth tiers.",
-                    "priority": "Medium",
-                    "pillar": "Customer Support Operations",
-                    "estimated_roi": "Reduces voluntary churn by 3.5 percentage points"
+                    "category": "Operational Support Quality",
+                    "finding": "Elevated support ticket resolution times correlate with higher observed churn in this dataset.",
+                    "evidence": f"Accounts with average resolution times exceeding 20 hours ({slow_count} accounts) show an observed churn rate of {slow_churn:.1f}% versus the baseline of {churn_rate:.1f}%.",
+                    "business_impact": "Technical and operational friction during incident resolution is an identified predictive signal for customer attrition.",
+                    "recommended_action": "Review tier-1 ticket resolution workflows and evaluate support capacity allocation for mission-critical accounts.",
+                    "priority": p_score["level"],
+                    "priority_details": p_score,
+                    "pillar": "Operational Efficiency"
                 })
 
-        # Universal Baseline Fallback Recommendations if specific column heuristics were not triggered
+        # ----------------------------------------------------
+        # Fallback Baseline Decision Cards (Guaranteed Grounding)
+        # ----------------------------------------------------
         if len(recommendations) < 2:
-            aov_fmt = kpis.get("aov_formatted", "$0.00")
             rev_fmt = kpis.get("revenue_formatted", "$0.00")
-            tot_cust = kpis.get("total_customers", len(df))
+            aov_fmt = kpis.get("aov_formatted", "N/A")
+            p_score = self._score_priority(impact_score=2, urgency_score=2, evidence_score=2)
 
             recommendations.append({
                 "id": "REC-GEN-01",
-                "category": "Revenue Growth",
-                "finding": "Account value distribution indicates opportunities for structured contract tier expansion.",
-                "evidence": f"Audited dataset includes {tot_cust:,} accounts generating {rev_fmt} in total revenue with an Average Order Value (AOV) of {aov_fmt}.",
-                "business_impact": "A 10% increase in average account realization across mid-tier cohorts unlocks meaningful expansion revenue with minimal CAC.",
-                "recommended_action": "Package high-usage features into premium tiered modules and align account renewal discussions with customer ROI milestones.",
-                "priority": "High",
-                "pillar": "Account Expansion & Pricing",
-                "estimated_roi": "Immediate incremental margin expansion"
-            })
-
-            recommendations.append({
-                "id": "REC-GEN-02",
-                "category": "Customer Retention",
-                "finding": "Proactive account monitoring and activity telemetry prevents voluntary customer attrition.",
-                "evidence": f"Baseline customer retention stands at {kpis.get('retention_rate', 90.0):.1f}%. Accounts showing prolonged inactivity are at elevated risk of silent departure.",
-                "business_impact": "Retaining an additional 2-3% of existing account volume directly increases enterprise enterprise valuation and gross profit.",
-                "recommended_action": "Establish an automated 30-day customer re-engagement trigger and offer targeted technical support reviews to inactive accounts.",
-                "priority": "Medium",
-                "pillar": "Customer Success Operations",
-                "estimated_roi": "Reduces churn baseline by 2-4 percentage points"
+                "category": "Revenue Realization",
+                "finding": "Account distribution indicates opportunities for structured tier management.",
+                "evidence": f"Verified dataset spans {total_cust:,} accounts generating {rev_fmt} in total revenue.",
+                "business_impact": "Consistent account review cadence protects baseline revenue realization.",
+                "recommended_action": "Implement systematic quarterly account reviews focused on product adoption and utilization.",
+                "priority": p_score["level"],
+                "priority_details": p_score,
+                "pillar": "Account Management"
             })
 
         return recommendations
