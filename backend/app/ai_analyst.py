@@ -128,49 +128,59 @@ Respond ONLY in valid JSON matching this schema:
 }}
 """
 
-        try:
-            from google import genai
-            client = genai.Client(api_key=api_key)
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt,
-                config={
-                    "system_instruction": system_instruction,
-                    "response_mime_type": "application/json",
-                    "temperature": 0.2
+        from google import genai
+        client = genai.Client(api_key=api_key)
+
+        for model_candidate in ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-3.5-flash", "gemini-flash-latest", "gemini-3.6-flash"]:
+            try:
+                response = client.models.generate_content(
+                    model=model_candidate,
+                    contents=prompt,
+                    config={
+                        "system_instruction": system_instruction,
+                        "response_mime_type": "application/json",
+                        "temperature": 0.2
+                    }
+                )
+                parsed = json.loads(response.text)
+                return {
+                    "question": question,
+                    "executive_summary": parsed.get("executive_summary", ""),
+                    "data_backed_findings": parsed.get("data_backed_findings", []),
+                    "strategic_recommendations": parsed.get("strategic_recommendations", []),
+                    "key_metric_highlight": parsed.get("key_metric_highlight", "Verified Analysis"),
+                    "grounding_confidence": "100% Grounded in Dataset",
+                    "model_used": f"Gemini ({model_candidate})"
                 }
-            )
-            parsed = json.loads(response.text)
-            return {
-                "question": question,
-                "executive_summary": parsed.get("executive_summary", ""),
-                "data_backed_findings": parsed.get("data_backed_findings", []),
-                "strategic_recommendations": parsed.get("strategic_recommendations", []),
-                "key_metric_highlight": parsed.get("key_metric_highlight", "Verified Analysis"),
-                "grounding_confidence": "100% Grounded in Dataset",
-                "model_used": "Gemini 2.5 Flash (Grounded)"
-            }
-        except Exception:
-            # Fallback to direct HTTP request with 4-second timeout
-            import requests
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
-            payload = {
-                "contents": [{"parts": [{"text": f"{system_instruction}\n\n{prompt}"}]}],
-                "generationConfig": {"temperature": 0.2, "responseMimeType": "application/json"}
-            }
-            res = requests.post(url, json=payload, timeout=4.0)
-            res_data = res.json()
-            raw_text = res_data["candidates"][0]["content"]["parts"][0]["text"]
-            parsed = json.loads(raw_text)
-            return {
-                "question": question,
-                "executive_summary": parsed.get("executive_summary", ""),
-                "data_backed_findings": parsed.get("data_backed_findings", []),
-                "strategic_recommendations": parsed.get("strategic_recommendations", []),
-                "key_metric_highlight": parsed.get("key_metric_highlight", "Verified Analysis"),
-                "grounding_confidence": "100% Grounded in Dataset",
-                "model_used": "Gemini 2.5 Flash (REST API)"
-            }
+            except Exception as e:
+                continue
+
+        # Fallback to direct HTTP request with 3.5-second timeout
+        import requests
+        for http_model in ["gemini-3.5-flash", "gemini-3.6-flash"]:
+            try:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{http_model}:generateContent?key={api_key}"
+                payload = {
+                    "contents": [{"parts": [{"text": f"{system_instruction}\n\n{prompt}"}]}],
+                    "generationConfig": {"temperature": 0.2, "responseMimeType": "application/json"}
+                }
+                res = requests.post(url, json=payload, timeout=3.5)
+                res_data = res.json()
+                raw_text = res_data["candidates"][0]["content"]["parts"][0]["text"]
+                parsed = json.loads(raw_text)
+                return {
+                    "question": question,
+                    "executive_summary": parsed.get("executive_summary", ""),
+                    "data_backed_findings": parsed.get("data_backed_findings", []),
+                    "strategic_recommendations": parsed.get("strategic_recommendations", []),
+                    "key_metric_highlight": parsed.get("key_metric_highlight", "Verified Analysis"),
+                    "grounding_confidence": "100% Grounded in Dataset",
+                    "model_used": f"Gemini ({http_model} REST)"
+                }
+            except Exception:
+                continue
+
+        raise RuntimeError("Gemini API call could not complete; falling back to grounded deterministic engine.")
 
     def _deterministic_analyst_response(self, question: str) -> Dict[str, Any]:
         """

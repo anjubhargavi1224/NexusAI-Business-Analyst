@@ -2,9 +2,17 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# Load .env from project root or backend dir
+# Load .env from project root, backend, frontend, or current working directory
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
-load_dotenv(ROOT_DIR / ".env")
+for env_path in [
+    ROOT_DIR / ".env",
+    ROOT_DIR / "backend" / ".env",
+    ROOT_DIR / "frontend" / ".env",
+    ROOT_DIR / "frontend" / "src" / ".env",
+    Path.cwd() / ".env"
+]:
+    if env_path.exists():
+        load_dotenv(env_path, override=True)
 load_dotenv()
 
 class Settings:
