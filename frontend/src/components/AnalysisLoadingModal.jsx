@@ -28,7 +28,7 @@ export const AnalysisLoadingModal = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '1.5rem'
+        padding: 'clamp(0.75rem, 3vw, 1.5rem)'
       }}
     >
       <div 
@@ -36,7 +36,9 @@ export const AnalysisLoadingModal = () => {
         style={{
           maxWidth: '560px',
           width: '100%',
-          padding: '2.5rem',
+          maxHeight: '92vh',
+          overflowY: 'auto',
+          padding: 'clamp(1.25rem, 3vw, 2.5rem)',
           textAlign: 'center',
           position: 'relative',
           border: '1px solid rgba(126, 62, 172, 0.4)',
@@ -50,7 +52,7 @@ export const AnalysisLoadingModal = () => {
 
         {/* Title */}
         <h3 style={{
-          fontSize: '1.35rem',
+          fontSize: 'clamp(1.1rem, 2.5vw, 1.35rem)',
           fontWeight: 700,
           color: '#FFFFFF',
           marginBottom: '0.5rem',
@@ -74,7 +76,7 @@ export const AnalysisLoadingModal = () => {
           gap: '0.75rem',
           textAlign: 'left',
           background: 'rgba(10, 6, 15, 0.6)',
-          padding: '1.25rem 1.5rem',
+          padding: 'clamp(0.85rem, 2.5vw, 1.5rem)',
           borderRadius: 'var(--radius-md)',
           border: '1px solid rgba(92, 46, 126, 0.25)'
         }}>

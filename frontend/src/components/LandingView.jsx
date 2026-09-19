@@ -103,17 +103,17 @@ export const LandingView = () => {
         style={{
           maxWidth: '1380px',
           margin: '0 auto',
-          padding: '4.5rem 2rem 3rem 2rem',
+          padding: 'clamp(2rem, 5vw, 4.5rem) clamp(1rem, 3vw, 2rem)',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
           alignItems: 'center',
-          gap: '3.5rem'
+          gap: 'clamp(2rem, 4vw, 3.5rem)'
         }}
       >
         {/* Left Column: Hero Text & CTAs */}
         <div>
           {/* Tagline Badge */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.25rem' }}>
             <span 
               className="badge badge-purple"
               style={{
@@ -123,18 +123,18 @@ export const LandingView = () => {
               }}
             >
               <Cpu size={14} color="#C084FC" />
-              <span>NEXUS AI • Business Intelligence & Decision Support</span>
+              <span>NEXUS AI • Decision Support</span>
             </span>
           </div>
 
           {/* Headline */}
           <h1 
             style={{
-              fontSize: '3.75rem',
+              fontSize: 'clamp(2.1rem, 5.5vw, 3.75rem)',
               lineHeight: 1.12,
               fontWeight: 800,
               color: '#FFFFFF',
-              marginBottom: '1.5rem',
+              marginBottom: '1.25rem',
               letterSpacing: '-0.035em'
             }}
           >
@@ -154,11 +154,11 @@ export const LandingView = () => {
           {/* Supporting Text */}
           <p 
             style={{
-              fontSize: '1.1875rem',
+              fontSize: 'clamp(1rem, 2.5vw, 1.1875rem)',
               color: 'var(--text-secondary)',
               lineHeight: 1.65,
               maxWidth: '580px',
-              marginBottom: '2.5rem',
+              marginBottom: '2rem',
               fontWeight: 400
             }}
           >
@@ -167,18 +167,18 @@ export const LandingView = () => {
           </p>
 
           {/* Primary & Secondary Action CTAs */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '2rem' }}>
             <button 
               className="btn-primary" 
               onClick={handleStartAnalyzingClick}
               style={{
-                padding: '0.95rem 2.25rem',
-                fontSize: '1.05rem',
+                padding: '0.85rem 1.85rem',
+                fontSize: '0.975rem',
                 fontWeight: 700
               }}
             >
               <span>{hasDataset && isAnalyzed ? 'Open Executive Dashboard' : 'Start Analyzing'}</span>
-              <ArrowRight size={20} />
+              <ArrowRight size={18} />
             </button>
 
             <button 
@@ -186,20 +186,20 @@ export const LandingView = () => {
               onClick={loadDemo}
               disabled={isUploading}
               style={{
-                padding: '0.95rem 1.75rem',
-                fontSize: '1rem',
+                padding: '0.85rem 1.5rem',
+                fontSize: '0.9375rem',
                 fontWeight: 600,
                 background: 'rgba(92, 46, 126, 0.15)',
                 borderColor: 'rgba(126, 62, 172, 0.4)'
               }}
             >
-              <Sparkles size={18} color="#C084FC" />
+              <Sparkles size={17} color="#C084FC" />
               <span>Explore Demo</span>
             </button>
           </div>
 
           {/* Value Pills */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>
               <ShieldCheck size={16} color="#7E3EAC" />
               <span>Zero-Hallucination Analytics</span>
@@ -222,7 +222,9 @@ export const LandingView = () => {
             alignItems: 'center',
             justifyContent: 'center',
             position: 'relative',
-            minHeight: '440px'
+            minHeight: 'clamp(280px, 40vw, 440px)',
+            width: '100%',
+            overflow: 'visible'
           }}
         >
           {/* Main 3D Robot Mascot */}
@@ -232,7 +234,7 @@ export const LandingView = () => {
 
           {/* Floating Telemetry Card 1 (Top Right) */}
           <div 
-            className="glass-card"
+            className="glass-card hero-floating-card-1"
             style={{
               position: 'absolute',
               top: '8%',
@@ -257,7 +259,7 @@ export const LandingView = () => {
 
           {/* Floating Telemetry Card 2 (Bottom Left) */}
           <div 
-            className="glass-card"
+            className="glass-card hero-floating-card-2"
             style={{
               position: 'absolute',
               bottom: '12%',
@@ -282,7 +284,7 @@ export const LandingView = () => {
 
           {/* Floating Telemetry Card 3 (Bottom Right) */}
           <div 
-            className="glass-card"
+            className="glass-card hero-floating-card-3"
             style={{
               position: 'absolute',
               bottom: '18%',
@@ -310,8 +312,8 @@ export const LandingView = () => {
         ref={uploadSectionRef}
         style={{
           maxWidth: '1240px',
-          margin: '2rem auto 4.5rem auto',
-          padding: '0 2rem'
+          margin: '1.5rem auto 3.5rem auto',
+          padding: '0 clamp(1rem, 3vw, 2rem)'
         }}
       >
         {/* Section Heading */}
@@ -521,13 +523,13 @@ export const LandingView = () => {
         style={{
           maxWidth: '1380px',
           margin: '0 auto',
-          padding: '0 2rem'
+          padding: '0 clamp(1rem, 3vw, 2rem)'
         }}
       >
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-          gap: '1.5rem'
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))',
+          gap: '1.25rem'
         }}>
           {capabilities.map((c, i) => {
             const Icon = c.icon;

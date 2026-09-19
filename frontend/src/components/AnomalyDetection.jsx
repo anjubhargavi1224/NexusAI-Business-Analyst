@@ -74,7 +74,7 @@ export const AnomalyDetection = () => {
         </div>
 
         {/* Severity Filter Tabs */}
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           {['all', 'critical', 'warning', 'info'].map((sev) => (
             <button
               key={sev}
@@ -100,7 +100,7 @@ export const AnomalyDetection = () => {
       {/* Summary Scorecard Strip */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
         gap: '1.25rem',
         marginBottom: '2rem'
       }}>
@@ -136,7 +136,7 @@ export const AnomalyDetection = () => {
             key={item.id || idx}
             className="glass-card"
             style={{
-              padding: '1.75rem',
+              padding: 'clamp(1rem, 2.5vw, 1.75rem)',
               borderColor: getSeverityBorder(item.severity),
               position: 'relative'
             }}
@@ -168,7 +168,7 @@ export const AnomalyDetection = () => {
             {/* Structured Evidence & Implication Grid */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
               gap: '1.25rem',
               marginBottom: '1.25rem'
             }}>

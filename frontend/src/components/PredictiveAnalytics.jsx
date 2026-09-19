@@ -148,7 +148,7 @@ export const PredictiveAnalytics = () => {
       {/* Model Performance Scorecard Strip */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))',
         gap: '1rem',
         marginBottom: '2rem'
       }}>
@@ -214,7 +214,7 @@ export const PredictiveAnalytics = () => {
             <span className="badge badge-indigo">Zero Target Leakage</span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))', gap: '1rem' }}>
             <div style={{ background: 'rgba(59, 130, 246, 0.06)', border: '1px solid rgba(59, 130, 246, 0.25)', padding: '1rem', borderRadius: '8px' }}>
               <div style={{ fontSize: '0.8125rem', color: '#93C5FD', fontWeight: 700, marginBottom: '0.5rem' }}>
                 Random Forest (Ensemble) — Selected Model
@@ -243,13 +243,13 @@ export const PredictiveAnalytics = () => {
       {/* Row: Confusion Matrix + Feature Importances */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(420px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))',
         gap: '1.5rem',
         marginBottom: '2rem'
       }}>
         {/* Confusion Matrix Heatmap */}
-        <div className="glass-card" style={{ padding: '1.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+        <div className="glass-card" style={{ padding: 'clamp(1rem, 2.5vw, 1.75rem)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div>
               <h3 style={{ fontSize: '1.125rem' }}>Confusion Matrix & Error Cost Trade-Off</h3>
               <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Holdout validation cohort (N = {cm.total_test_samples})</p>
@@ -260,7 +260,7 @@ export const PredictiveAnalytics = () => {
           {/* Heatmap Grid 2x2 */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))',
             gap: '0.75rem',
             marginBottom: '1.25rem'
           }}>
@@ -336,8 +336,8 @@ export const PredictiveAnalytics = () => {
         </div>
 
         {/* Feature Importance Ranking */}
-        <div className="glass-card" style={{ padding: '1.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+        <div className="glass-card" style={{ padding: 'clamp(1rem, 2.5vw, 1.75rem)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div>
               <h3 style={{ fontSize: '1.125rem' }}>Top Predictive Feature Weights</h3>
               <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Relative decision split importance across ensemble trees</p>
@@ -377,7 +377,7 @@ export const PredictiveAnalytics = () => {
       </div>
 
       {/* Interactive "What-If" Churn Scenario Simulator */}
-      <div className="glass-card" style={{ padding: '2rem', border: '1px solid var(--accent-cyan-glow)' }}>
+      <div className="glass-card" style={{ padding: 'clamp(1.25rem, 3vw, 2rem)', border: '1px solid var(--accent-cyan-glow)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', marginBottom: '0.5rem' }}>
           <Sliders size={20} color="var(--accent-cyan)" />
           <h3 style={{ fontSize: '1.35rem' }}>Interactive "What-If" Churn Risk Simulator</h3>
@@ -388,7 +388,7 @@ export const PredictiveAnalytics = () => {
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
           gap: '2rem',
           alignItems: 'center'
         }}>

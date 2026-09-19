@@ -28,7 +28,7 @@ export const EmptyState = ({
         style={{
           maxWidth: '680px',
           width: '100%',
-          padding: '3.5rem 2.5rem',
+          padding: 'clamp(2rem, 5vw, 3.5rem) clamp(1.25rem, 4vw, 2.5rem)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -63,7 +63,7 @@ export const EmptyState = ({
 
         {/* Title & Description */}
         <h2 style={{
-          fontSize: '1.75rem',
+          fontSize: 'clamp(1.25rem, 3.5vw, 1.75rem)',
           fontWeight: 700,
           color: '#FFFFFF',
           marginBottom: '0.75rem',

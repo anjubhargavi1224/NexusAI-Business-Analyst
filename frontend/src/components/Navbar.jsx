@@ -6,9 +6,10 @@ import {
   FileText, 
   UploadCloud, 
   Layers, 
-  RefreshCw, 
   ShieldCheck,
-  RotateCcw
+  RotateCcw,
+  Menu,
+  X
 } from 'lucide-react';
 
 export const Navbar = () => {
@@ -23,79 +24,105 @@ export const Navbar = () => {
     setIsQualityModalOpen,
     openUploadDialog,
     loadDemo,
-    resetWorkspace
+    resetWorkspace,
+    isMobileNavOpen,
+    setIsMobileNavOpen
   } = useAnalytics();
 
+  const isLanding = activeView === 'landing';
   const qualityScore = datasetInfo?.quality_report?.quality_score || 96;
 
   return (
     <header className="no-print" style={{
       height: '64px',
       borderBottom: '1px solid rgba(92, 46, 126, 0.25)',
-      background: 'rgba(5, 4, 8, 0.92)',
+      background: 'rgba(5, 4, 8, 0.94)',
       backdropFilter: 'blur(16px)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: '0 2rem',
+      padding: '0 clamp(0.75rem, 2.5vw, 2rem)',
       position: 'sticky',
       top: 0,
-      zIndex: 40
+      zIndex: 40,
+      gap: '0.75rem'
     }}>
-      {/* Brand & Subtitle */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+      {/* Brand & Mobile Hamburger */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        {/* Mobile Hamburger Menu Button (shown on < 1024px when not on landing) */}
+        {!isLanding && (
+          <button
+            onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
+            aria-label="Toggle Navigation Menu"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '38px',
+              height: '38px',
+              borderRadius: '8px',
+              background: 'rgba(92, 46, 126, 0.2)',
+              border: '1px solid rgba(126, 62, 172, 0.35)',
+              color: '#FFFFFF',
+              cursor: 'pointer'
+            }}
+            className="mobile-nav-toggle"
+          >
+            {isMobileNavOpen ? <X size={20} color="#C084FC" /> : <Menu size={20} color="#C084FC" />}
+          </button>
+        )}
+
         <div 
           onClick={() => setActiveView('landing')}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer' }}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', cursor: 'pointer', userSelect: 'none' }}
           title="Return to Landing Page"
         >
           <div style={{
-            width: '34px',
-            height: '34px',
-            borderRadius: '9px',
+            width: '32px',
+            height: '32px',
+            borderRadius: '8px',
             background: 'linear-gradient(135deg, #5C2E7E 0%, #7E3EAC 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 16px rgba(126, 62, 172, 0.45)',
-            border: '1px solid rgba(255, 255, 255, 0.15)'
+            boxShadow: '0 0 14px rgba(126, 62, 172, 0.45)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            flexShrink: 0
           }}>
-            <Layers size={18} color="#FFFFFF" strokeWidth={2.5} />
+            <Layers size={17} color="#FFFFFF" strokeWidth={2.5} />
           </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.15rem', fontWeight: 800, letterSpacing: '-0.03em', color: '#FFFFFF' }}>
-                NEXUS<span style={{ color: '#C084FC' }}>AI</span>
-              </span>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', borderLeft: '1px solid rgba(92, 46, 126, 0.4)', paddingLeft: '0.5rem' }}>
-                Business Intelligence & Decision Support
-              </span>
-            </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <span style={{ fontFamily: 'var(--font-heading)', fontSize: '1.125rem', fontWeight: 800, letterSpacing: '-0.03em', color: '#FFFFFF' }}>
+              NEXUS<span style={{ color: '#C084FC' }}>AI</span>
+            </span>
+            <span className="navbar-subtitle" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', borderLeft: '1px solid rgba(92, 46, 126, 0.4)', paddingLeft: '0.5rem' }}>
+              Business Intelligence & Decision Support
+            </span>
           </div>
         </div>
       </div>
 
       {/* Center: Dataset Status Indicator Tag */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+      <div className="navbar-dataset-status" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         {hasDataset && isAnalyzed ? (
           <>
             {isDemo ? (
               <span 
                 className="badge badge-demo" 
-                style={{ padding: '0.35rem 0.85rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-                title="Application is currently running on the synthetic enterprise demo dataset"
+                style={{ padding: '0.3rem 0.75rem', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+                title="Synthetic enterprise demo dataset active"
               >
-                <Sparkles size={13} color="#F3E8FF" />
-                <span>Demo Dataset</span>
+                <Sparkles size={12} color="#F3E8FF" />
+                <span>Demo</span>
               </span>
             ) : (
               <span 
                 className="badge badge-purple" 
-                style={{ padding: '0.35rem 0.85rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                style={{ padding: '0.3rem 0.75rem', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.35rem', maxWidth: '160px' }}
               >
-                <Database size={13} color="#E9D5FF" />
-                <span style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {datasetName || 'User CSV Dataset'}
+                <Database size={12} color="#E9D5FF" />
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {datasetName || 'User CSV'}
                 </span>
               </span>
             )}
@@ -106,15 +133,16 @@ export const Navbar = () => {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '0.45rem',
+                gap: '0.4rem',
                 background: 'rgba(255, 255, 255, 0.04)',
                 border: '1px solid rgba(92, 46, 126, 0.3)',
                 borderRadius: '9999px',
-                padding: '0.3rem 0.75rem',
+                padding: '0.28rem 0.65rem',
                 cursor: 'pointer',
                 color: 'var(--text-secondary)',
-                fontSize: '0.75rem',
-                transition: 'all 0.2s ease'
+                fontSize: '0.72rem',
+                transition: 'all 0.2s ease',
+                whiteSpace: 'nowrap'
               }}
               title="Click to view full dataset audit"
             >
@@ -125,35 +153,22 @@ export const Navbar = () => {
                 background: '#10B981',
                 boxShadow: '0 0 6px #10B981'
               }} />
-              <span>{qualityScore}% Quality</span>
+              <span>{qualityScore}%</span>
             </button>
           </>
-        ) : (
-          <span 
-            className="badge" 
-            style={{ 
-              background: 'rgba(255, 255, 255, 0.04)', 
-              color: 'var(--text-muted)', 
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              padding: '0.3rem 0.75rem',
-              fontSize: '0.75rem'
-            }}
-          >
-            No Active Dataset
-          </span>
-        )}
+        ) : null}
       </div>
 
       {/* Right Action Buttons */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
         <button 
           className="btn-outline"
           onClick={openUploadDialog}
-          style={{ padding: '0.42rem 0.85rem', fontSize: '0.8125rem' }}
+          style={{ padding: '0.38rem 0.75rem', fontSize: '0.78rem' }}
           title="Upload a business CSV from your computer"
         >
-          <UploadCloud size={15} />
-          <span>Upload CSV</span>
+          <UploadCloud size={14} />
+          <span className="btn-label-desktop">Upload CSV</span>
         </button>
 
         {hasDataset ? (
@@ -164,8 +179,8 @@ export const Navbar = () => {
               border: '1px solid rgba(92, 46, 126, 0.25)',
               color: 'var(--text-muted)',
               borderRadius: 'var(--radius-md)',
-              padding: '0.42rem 0.75rem',
-              fontSize: '0.8125rem',
+              padding: '0.38rem 0.65rem',
+              fontSize: '0.78rem',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -174,28 +189,28 @@ export const Navbar = () => {
             }}
             title="Reset workspace and clear active dataset"
           >
-            <RotateCcw size={14} />
-            <span>Reset</span>
+            <RotateCcw size={13} />
+            <span className="btn-label-desktop">Reset</span>
           </button>
         ) : (
           <button 
             className="btn-secondary"
             onClick={loadDemo}
-            style={{ padding: '0.42rem 0.85rem', fontSize: '0.8125rem' }}
+            style={{ padding: '0.38rem 0.75rem', fontSize: '0.78rem' }}
             title="Load bundled enterprise demo dataset"
           >
-            <Sparkles size={14} color="#C084FC" />
-            <span>Use Demo</span>
+            <Sparkles size={13} color="#C084FC" />
+            <span className="btn-label-desktop">Demo</span>
           </button>
         )}
 
         <button 
           className="btn-primary"
           onClick={() => setActiveView('report')}
-          style={{ padding: '0.45rem 1rem', fontSize: '0.8125rem' }}
+          style={{ padding: '0.4rem 0.85rem', fontSize: '0.78rem' }}
         >
-          <FileText size={15} />
-          <span>Executive Brief</span>
+          <FileText size={14} />
+          <span>Brief</span>
         </button>
       </div>
     </header>

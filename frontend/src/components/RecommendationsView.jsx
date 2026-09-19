@@ -113,10 +113,10 @@ export const RecommendationsView = () => {
           const currentStatus = actionStatuses[rec.id] || 'Under Review';
 
           return (
-            <div key={rec.id} className="glass-card" style={{ padding: '2rem', position: 'relative' }}>
+            <div key={rec.id} className="glass-card" style={{ padding: 'clamp(1rem, 2.5vw, 2rem)', position: 'relative' }}>
               {/* Top Meta Line */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', flexWrap: 'wrap' }}>
                   {getPriorityBadge(rec.priority)}
                   <span className="badge badge-indigo">{rec.category}</span>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{rec.id}</span>
@@ -157,7 +157,7 @@ export const RecommendationsView = () => {
                 {/* 2. Evidence & 3. Business Impact (2-Col) */}
                 <div style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
                   gap: '1.25rem'
                 }}>
                   <div style={{
@@ -201,7 +201,7 @@ export const RecommendationsView = () => {
                   flexWrap: 'wrap',
                   gap: '1rem'
                 }}>
-                  <div style={{ flex: 1, minWidth: '280px' }}>
+                  <div style={{ flex: 1, minWidth: 'min(100%, 280px)' }}>
                     <span style={{ fontSize: '0.75rem', color: '#34D399', fontWeight: 600, textTransform: 'uppercase', display: 'block', marginBottom: '0.25rem' }}>
                       4. Prescriptive Management Action
                     </span>

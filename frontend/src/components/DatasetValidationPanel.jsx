@@ -175,9 +175,9 @@ export const DatasetValidationPanel = ({ onAnalyzeClick }) => {
       {/* Grid: 4 Metric Cards */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-        gap: '1rem',
-        marginBottom: '1.75rem'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 130px), 1fr))',
+        gap: '0.85rem',
+        marginBottom: '1.5rem'
       }}>
         <div style={{
           background: 'rgba(10, 6, 15, 0.5)',
@@ -243,7 +243,7 @@ export const DatasetValidationPanel = ({ onAnalyzeClick }) => {
       {/* Two Columns: Checklist & Mapped Dimensions */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
         gap: '1.25rem',
         marginBottom: '1.75rem'
       }}>

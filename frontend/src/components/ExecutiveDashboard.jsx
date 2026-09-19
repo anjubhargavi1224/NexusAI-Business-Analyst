@@ -346,13 +346,13 @@ export const ExecutiveDashboard = () => {
       {/* Visual Analytics Grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(480px, 1fr))',
-        gap: '1.5rem',
-        marginBottom: '2rem'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 420px), 1fr))',
+        gap: '1.25rem',
+        marginBottom: '1.5rem'
       }}>
         {/* Interactive Revenue & Customer Volume Trend Chart */}
-        <div className="glass-card" style={{ padding: '1.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+        <div className="glass-card" style={{ padding: 'clamp(1rem, 3vw, 1.75rem)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div>
               <h3 style={{ fontSize: '1.125rem' }}>Revenue & Order Trajectory</h3>
               <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Periodic revenue progression across active fiscal intervals</p>
@@ -361,7 +361,7 @@ export const ExecutiveDashboard = () => {
           </div>
 
           {/* SVG Multi-Axis Chart */}
-          <div style={{ width: '100%', height: '260px', position: 'relative' }}>
+          <div style={{ width: '100%', height: '240px', position: 'relative' }}>
             <svg 
               width="100%" 
               height="100%" 
@@ -437,7 +437,8 @@ export const ExecutiveDashboard = () => {
                 border: '1px solid var(--accent-cyan)',
                 borderRadius: 'var(--radius-sm)',
                 boxShadow: 'var(--shadow-card)',
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                zIndex: 10
               }}>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{trendData[hoveredTrendPoint].period}</div>
                 <div style={{ fontSize: '0.9375rem', fontWeight: 700, color: '#38BDF8' }}>
@@ -451,16 +452,16 @@ export const ExecutiveDashboard = () => {
           </div>
 
           {/* Period Labels */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.75rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.75rem', overflowX: 'auto', gap: '0.5rem' }}>
             {trendData.slice(0, 6).map((d, i) => (
-              <span key={i} style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>{d.period}</span>
+              <span key={i} style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{d.period}</span>
             ))}
           </div>
         </div>
 
         {/* Product / Category Contribution */}
-        <div className="glass-card" style={{ padding: '1.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+        <div className="glass-card" style={{ padding: 'clamp(1rem, 3vw, 1.75rem)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div>
               <h3 style={{ fontSize: '1.125rem' }}>Category Revenue Contribution</h3>
               <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Product mix distribution across overall commercial billing</p>
@@ -475,7 +476,7 @@ export const ExecutiveDashboard = () => {
 
               return (
                 <div key={idx}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', marginBottom: '0.35rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', marginBottom: '0.35rem', flexWrap: 'wrap', gap: '0.25rem' }}>
                     <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{cat.category}</span>
                     <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>
                       ${cat.revenue?.toLocaleString()} ({cat.share_pct}%)
@@ -500,12 +501,12 @@ export const ExecutiveDashboard = () => {
       {/* Lower Row: Risk Distribution & Regional Exposure */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-        gap: '1.5rem'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
+        gap: '1.25rem'
       }}>
         {/* Churn Risk by Contract Tier */}
-        <div className="glass-card" style={{ padding: '1.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+        <div className="glass-card" style={{ padding: 'clamp(1rem, 3vw, 1.75rem)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div>
               <h3 style={{ fontSize: '1.125rem' }}>Attrition Velocity by Tier</h3>
               <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Observed customer churn probability per contract commitment</p>
@@ -513,43 +514,45 @@ export const ExecutiveDashboard = () => {
             <span className="badge badge-rose">Risk Matrix</span>
           </div>
 
-          <table className="nexus-table">
-            <thead>
-              <tr>
-                <th>Cohort</th>
-                <th>Total Accounts</th>
-                <th>Active</th>
-                <th>Attrition %</th>
-              </tr>
-            </thead>
-            <tbody>
-              {riskTiers.map((r, i) => (
-                <tr key={i}>
-                  <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{r.segment}</td>
-                  <td>{r.total}</td>
-                  <td>{r.active}</td>
-                  <td>
-                    <span style={{
-                      display: 'inline-block',
-                      padding: '0.15rem 0.5rem',
-                      borderRadius: '4px',
-                      fontSize: '0.75rem',
-                      fontWeight: 600,
-                      background: r.churn_rate_pct > 20 ? 'rgba(244, 63, 94, 0.15)' : 'rgba(16, 185, 129, 0.15)',
-                      color: r.churn_rate_pct > 20 ? '#FB7185' : '#34D399'
-                    }}>
-                      {r.churn_rate_pct}%
-                    </span>
-                  </td>
+          <div className="table-responsive-wrapper">
+            <table className="nexus-table">
+              <thead>
+                <tr>
+                  <th>Cohort</th>
+                  <th>Total Accounts</th>
+                  <th>Active</th>
+                  <th>Attrition %</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {riskTiers.map((r, i) => (
+                  <tr key={i}>
+                    <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{r.segment}</td>
+                    <td>{r.total}</td>
+                    <td>{r.active}</td>
+                    <td>
+                      <span style={{
+                        display: 'inline-block',
+                        padding: '0.15rem 0.5rem',
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        background: r.churn_rate_pct > 20 ? 'rgba(244, 63, 94, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                        color: r.churn_rate_pct > 20 ? '#FB7185' : '#34D399'
+                      }}>
+                        {r.churn_rate_pct}%
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Regional Performance Breakdown */}
-        <div className="glass-card" style={{ padding: '1.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+        <div className="glass-card" style={{ padding: 'clamp(1rem, 3vw, 1.75rem)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div>
               <h3 style={{ fontSize: '1.125rem' }}>Geographic Inflow</h3>
               <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Revenue contribution grouped by global geographic territories</p>
@@ -557,26 +560,28 @@ export const ExecutiveDashboard = () => {
             <span className="badge badge-cyan">Regional Telemetry</span>
           </div>
 
-          <table className="nexus-table">
-            <thead>
-              <tr>
-                <th>Territory</th>
-                <th>Customers</th>
-                <th>Gross Revenue</th>
-              </tr>
-            </thead>
-            <tbody>
-              {regions.map((reg, i) => (
-                <tr key={i}>
-                  <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{reg.region}</td>
-                  <td>{reg.customers} accounts</td>
-                  <td style={{ fontWeight: 600, color: 'var(--accent-cyan)' }}>
-                    ${reg.revenue?.toLocaleString()}
-                  </td>
+          <div className="table-responsive-wrapper">
+            <table className="nexus-table">
+              <thead>
+                <tr>
+                  <th>Territory</th>
+                  <th>Customers</th>
+                  <th>Gross Revenue</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {regions.map((reg, i) => (
+                  <tr key={i}>
+                    <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{reg.region}</td>
+                    <td>{reg.customers} accounts</td>
+                    <td style={{ fontWeight: 600, color: 'var(--accent-cyan)' }}>
+                      ${reg.revenue?.toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

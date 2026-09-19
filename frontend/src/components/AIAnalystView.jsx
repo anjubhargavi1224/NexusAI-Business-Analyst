@@ -113,7 +113,7 @@ export const AIAnalystView = () => {
       <div 
         className="glass-card"
         style={{
-          padding: '2rem 2.5rem',
+          padding: 'clamp(1.25rem, 3.5vw, 2.5rem)',
           borderRadius: 'var(--radius-xl)',
           marginBottom: '2rem',
           display: 'flex',
@@ -125,8 +125,8 @@ export const AIAnalystView = () => {
           background: 'linear-gradient(135deg, rgba(24, 14, 38, 0.85) 0%, rgba(10, 6, 16, 0.95) 100%)'
         }}
       >
-        <div style={{ maxWidth: '650px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+        <div style={{ maxWidth: '650px', flex: 1, minWidth: 'min(100%, 280px)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
             <span className="badge badge-purple">
               <Bot size={13} /> Decision Support Analyst
             </span>
@@ -135,7 +135,7 @@ export const AIAnalystView = () => {
             </span>
           </div>
 
-          <h1 style={{ fontSize: '2.25rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '0.5rem', letterSpacing: '-0.025em' }}>
+          <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 2.25rem)', fontWeight: 800, color: '#FFFFFF', marginBottom: '0.5rem', letterSpacing: '-0.025em' }}>
             Ask NEXUS about your business.
           </h1>
 
@@ -200,7 +200,7 @@ export const AIAnalystView = () => {
             key={idx} 
             className="glass-card" 
             style={{ 
-              padding: '1.85rem', 
+              padding: 'clamp(1rem, 2.5vw, 1.85rem)', 
               position: 'relative',
               borderRadius: 'var(--radius-lg)',
               border: '1px solid rgba(92, 46, 126, 0.28)',
@@ -227,7 +227,8 @@ export const AIAnalystView = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: '0 0 12px rgba(126, 62, 172, 0.4)'
+                  boxShadow: '0 0 12px rgba(126, 62, 172, 0.4)',
+                  flexShrink: 0
                 }}>
                   <Bot size={18} color="#FFFFFF" />
                 </div>
@@ -241,7 +242,7 @@ export const AIAnalystView = () => {
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
                 <span className="badge badge-purple" style={{ fontSize: '0.7rem' }}>
                   {item.grounding_confidence}
                 </span>
@@ -268,7 +269,7 @@ export const AIAnalystView = () => {
             {/* Two-Column Separation: Findings vs Recommendations */}
             <div style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))',
               gap: '1.25rem'
             }}>
               {/* Left: Verified Empirical Findings */}
@@ -348,7 +349,8 @@ export const AIAnalystView = () => {
           gap: '0.75rem',
           border: '1px solid rgba(126, 62, 172, 0.45)',
           background: 'rgba(16, 10, 24, 0.95)',
-          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(92, 46, 126, 0.3)'
+          boxShadow: '0 8px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(92, 46, 126, 0.3)',
+          flexWrap: 'wrap'
         }}
       >
         <input 
@@ -367,7 +369,8 @@ export const AIAnalystView = () => {
             background: 'transparent',
             border: 'none',
             fontSize: '0.9375rem',
-            padding: '0.5rem 0.5rem'
+            padding: '0.5rem 0.5rem',
+            flex: '1 1 200px'
           }}
         />
 

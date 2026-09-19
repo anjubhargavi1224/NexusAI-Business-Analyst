@@ -92,7 +92,7 @@ export const ExecutiveReportView = () => {
       </div>
 
       {/* Formal Document Container */}
-      <div className="glass-card" style={{ padding: '3.5rem', background: 'rgba(15, 23, 42, 0.95)', border: '1px solid var(--border-highlight)' }}>
+      <div className="glass-card" style={{ padding: 'clamp(1.25rem, 4vw, 3.5rem)', background: 'rgba(15, 23, 42, 0.95)', border: '1px solid var(--border-highlight)' }}>
         
         {/* Document Header */}
         <div style={{ borderBottom: '2px solid var(--border-highlight)', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
@@ -101,13 +101,13 @@ export const ExecutiveReportView = () => {
               <div style={{ fontSize: '0.8125rem', color: 'var(--accent-cyan)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                 NEXUS AI DECISION INTELLIGENCE
               </div>
-              <h2 style={{ fontSize: '1.75rem', marginTop: '0.25rem' }}>{meta.document_title}</h2>
+              <h2 style={{ fontSize: 'clamp(1.25rem, 3vw, 1.75rem)', marginTop: '0.25rem' }}>{meta.document_title}</h2>
               <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
                 Target: {meta.classification}
               </div>
             </div>
 
-            <div style={{ textAlign: 'right', fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
+            <div style={{ textAlign: 'left', fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
               <div><strong>Date:</strong> {meta.prepared_date}</div>
               <div><strong>Audited Records:</strong> {meta.total_records?.toLocaleString()} Accounts</div>
               <div><strong>Data Health:</strong> {meta.data_quality_score}</div>
@@ -149,7 +149,7 @@ export const ExecutiveReportView = () => {
           </h3>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
             gap: '1rem'
           }}>
             {scorecard.map((kpi, idx) => (
@@ -175,30 +175,32 @@ export const ExecutiveReportView = () => {
           <h3 style={{ fontSize: '1.125rem', color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1rem' }}>
             3. Customer Segment Performance & Retention Posture
           </h3>
-          <table className="nexus-table">
-            <thead>
-              <tr>
-                <th>Discovered Persona</th>
-                <th>Volume</th>
-                <th>Revenue Share</th>
-                <th>Avg Spend</th>
-                <th>Churn Risk</th>
-                <th>Strategic Directive</th>
-              </tr>
-            </thead>
-            <tbody>
-              {customerInsights.map((c, idx) => (
-                <tr key={idx}>
-                  <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{c.persona}</td>
-                  <td>{c.accounts}</td>
-                  <td>{c.revenue_contribution}</td>
-                  <td>{c.avg_spend}</td>
-                  <td style={{ color: Number(c.churn_risk) > 20 ? '#FB7185' : '#34D399', fontWeight: 600 }}>{c.churn_risk}%</td>
-                  <td style={{ fontSize: '0.8125rem' }}>{c.strategic_directive}</td>
+          <div className="table-responsive-wrapper">
+            <table className="nexus-table" style={{ minWidth: '600px' }}>
+              <thead>
+                <tr>
+                  <th>Discovered Persona</th>
+                  <th>Volume</th>
+                  <th>Revenue Share</th>
+                  <th>Avg Spend</th>
+                  <th>Churn Risk</th>
+                  <th>Strategic Directive</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {customerInsights.map((c, idx) => (
+                  <tr key={idx}>
+                    <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{c.persona}</td>
+                    <td>{c.accounts}</td>
+                    <td>{c.revenue_contribution}</td>
+                    <td>{c.avg_spend}</td>
+                    <td style={{ color: Number(c.churn_risk) > 20 ? '#FB7185' : '#34D399', fontWeight: 600 }}>{c.churn_risk}%</td>
+                    <td style={{ fontSize: '0.8125rem' }}>{c.strategic_directive}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Section 4: Predictive Machine Learning Discoveries */}
@@ -218,10 +220,10 @@ export const ExecutiveReportView = () => {
             </div>
 
             {/* Model Comparison Table */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '1rem', marginBottom: '1rem' }}>
               <div style={{ background: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.2)', padding: '0.85rem', borderRadius: '8px' }}>
                 <div style={{ fontSize: '0.75rem', color: '#93C5FD', fontWeight: 700 }}>Random Forest Ensemble</div>
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.4rem', fontSize: '0.8125rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.4rem', fontSize: '0.8125rem', flexWrap: 'wrap' }}>
                   <span><strong>AUC:</strong> {rfMetrics.roc_auc != null ? `${(rfMetrics.roc_auc * 100).toFixed(1)}%` : 'N/A'}</span>
                   <span><strong>Acc:</strong> {rfMetrics.accuracy != null ? `${(rfMetrics.accuracy * 100).toFixed(1)}%` : 'N/A'}</span>
                   <span><strong>F1:</strong> {rfMetrics.f1_score != null ? `${(rfMetrics.f1_score * 100).toFixed(1)}%` : 'N/A'}</span>
@@ -230,7 +232,7 @@ export const ExecutiveReportView = () => {
 
               <div style={{ background: 'rgba(148, 163, 184, 0.05)', border: '1px solid rgba(148, 163, 184, 0.2)', padding: '0.85rem', borderRadius: '8px' }}>
                 <div style={{ fontSize: '0.75rem', color: '#CBD5E1', fontWeight: 700 }}>Logistic Regression Baseline</div>
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.4rem', fontSize: '0.8125rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.4rem', fontSize: '0.8125rem', flexWrap: 'wrap' }}>
                   <span><strong>AUC:</strong> {lrMetrics.roc_auc != null ? `${(lrMetrics.roc_auc * 100).toFixed(1)}%` : 'N/A'}</span>
                   <span><strong>Acc:</strong> {lrMetrics.accuracy != null ? `${(lrMetrics.accuracy * 100).toFixed(1)}%` : 'N/A'}</span>
                   <span><strong>F1:</strong> {lrMetrics.f1_score != null ? `${(lrMetrics.f1_score * 100).toFixed(1)}%` : 'N/A'}</span>

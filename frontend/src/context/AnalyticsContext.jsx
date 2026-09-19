@@ -24,6 +24,7 @@ export const AnalyticsProvider = ({ children }) => {
 
   // UI Modals & Progress Indicators
   const [isQualityModalOpen, setIsQualityModalOpen] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState(null);
@@ -319,6 +320,8 @@ export const AnalyticsProvider = ({ children }) => {
       recommendations,
       isQualityModalOpen,
       setIsQualityModalOpen,
+      isMobileNavOpen,
+      setIsMobileNavOpen,
       isUploading,
       uploadProgress,
       uploadError,

@@ -112,7 +112,7 @@ export const CustomerIntelligence = () => {
       {/* 4 Persona Cards Grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))',
         gap: '1.25rem',
         marginBottom: '2rem'
       }}>
@@ -188,7 +188,7 @@ export const CustomerIntelligence = () => {
       </div>
 
       {/* 2D Interactive Scatter Visualization */}
-      <div className="glass-card" style={{ padding: '1.75rem', marginBottom: '2rem' }}>
+      <div className="glass-card" style={{ padding: 'clamp(1rem, 2.5vw, 1.75rem)', marginBottom: '2rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.5rem' }}>
           <div>
             <h3 style={{ fontSize: '1.125rem' }}>Behavioral Cluster Scatter (RFM Mapping)</h3>
@@ -207,7 +207,7 @@ export const CustomerIntelligence = () => {
         </div>
 
         {/* SVG Scatter Plot */}
-        <div style={{ width: '100%', height: '340px', position: 'relative', background: 'rgba(7, 11, 20, 0.6)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
+        <div style={{ width: '100%', height: '340px', position: 'relative', background: 'rgba(7, 11, 20, 0.6)', borderRadius: 'var(--radius-md)', padding: '1rem', overflow: 'hidden' }}>
           <svg 
             width="100%" 
             height="100%" 
@@ -260,14 +260,14 @@ export const CustomerIntelligence = () => {
       </div>
 
       {/* Segment Performance Table */}
-      <div className="glass-card" style={{ padding: '1.75rem' }}>
+      <div className="glass-card" style={{ padding: 'clamp(1rem, 2.5vw, 1.75rem)' }}>
         <h3 style={{ fontSize: '1.125rem', marginBottom: '0.35rem' }}>Segment-Level Commercial Scorecard</h3>
         <p style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', marginBottom: '1.25rem' }}>
           Comparative operational performance, revenue concentration, and retention priorities across discovered clusters.
         </p>
 
-        <div style={{ overflowX: 'auto' }}>
-          <table className="nexus-table">
+        <div className="table-responsive-wrapper">
+          <table className="nexus-table" style={{ minWidth: '650px' }}>
             <thead>
               <tr>
                 <th>Discovered Persona</th>
@@ -327,9 +327,9 @@ export const CustomerIntelligence = () => {
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 60,
-          padding: '1.5rem'
+          padding: 'clamp(0.75rem, 3vw, 1.5rem)'
         }}>
-          <div className="glass-card" style={{ maxWidth: '480px', width: '100%', padding: '2rem', border: '1px solid var(--accent-cyan)' }}>
+          <div className="glass-card" style={{ maxWidth: '480px', width: '100%', maxHeight: '90vh', overflowY: 'auto', padding: 'clamp(1.25rem, 3vw, 2rem)', border: '1px solid var(--accent-cyan)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
               <div>
                 <span className="badge badge-cyan">{selectedCustomer.customer_id}</span>
@@ -377,3 +377,4 @@ export const CustomerIntelligence = () => {
     </div>
   );
 };
+

@@ -64,28 +64,28 @@ export const DataQualityModal = () => {
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 100,
-      padding: '1.5rem'
+      padding: 'clamp(0.75rem, 3vw, 1.5rem)'
     }}>
       <div className="glass-card animate-fade-in" style={{
         maxWidth: '840px',
         width: '100%',
         maxHeight: '90vh',
         overflowY: 'auto',
-        padding: '2.5rem',
+        padding: 'clamp(1rem, 3vw, 2.5rem)',
         border: '1px solid var(--border-highlight)',
         background: 'var(--bg-app)',
         boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.8)'
       }}>
         {/* Modal Top Bar */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.75rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.75rem', flexWrap: 'wrap', gap: '0.75rem' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
               <span className="badge badge-emerald">
                 <ShieldCheck size={14} /> Automated Health Audit
               </span>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Schema Profiling & Readiness</span>
             </div>
-            <h2 style={{ fontSize: '1.625rem' }}>Dataset Quality & Ingestion Center</h2>
+            <h2 style={{ fontSize: 'clamp(1.25rem, 3vw, 1.625rem)' }}>Dataset Quality & Ingestion Center</h2>
             <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
               Currently Active: <strong>{datasetInfo?.dataset_name || 'Enterprise Telemetry Dataset'}</strong>
             </p>
@@ -113,7 +113,7 @@ export const DataQualityModal = () => {
         {/* Quality Scorecard Row */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))',
           gap: '1rem',
           marginBottom: '2rem'
         }}>
@@ -188,7 +188,7 @@ export const DataQualityModal = () => {
             style={{
               border: `2px dashed ${dragActive ? 'var(--accent-cyan)' : 'rgba(255, 255, 255, 0.15)'}`,
               borderRadius: 'var(--radius-lg)',
-              padding: '2rem',
+              padding: 'clamp(1.25rem, 3vw, 2rem)',
               textAlign: 'center',
               background: dragActive ? 'rgba(56, 189, 248, 0.05)' : 'rgba(255, 255, 255, 0.01)',
               cursor: 'pointer',
@@ -224,7 +224,7 @@ export const DataQualityModal = () => {
             </div>
           )}
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '0.75rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '0.75rem', flexWrap: 'wrap' }}>
             <button 
               className="btn-secondary"
               onClick={loadDemo}
@@ -243,8 +243,8 @@ export const DataQualityModal = () => {
             Inferred Column Schema & Profile
           </div>
 
-          <div style={{ maxHeight: '240px', overflowY: 'auto', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)' }}>
-            <table className="nexus-table">
+          <div className="table-responsive-wrapper" style={{ maxHeight: '260px', overflowY: 'auto' }}>
+            <table className="nexus-table" style={{ minWidth: '550px' }}>
               <thead>
                 <tr>
                   <th>Field Name</th>
